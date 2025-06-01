@@ -51,7 +51,7 @@ export const getFeedPosts = query({
     // enhance posts with userdata and interaction status since we don't know if the post is liked or commented
     const postsWithInfo = await Promise.all(
       posts.map(async (post) => {
-        const postAuthor = (await ctx.db.get(post.userId))!; //data of the author of the post
+        const postAuthor = (await ctx.db.get(post.userId))!; //data of the author of the post  = this will never be null(!)
 
         // check if the post is liked or not
         const like = await ctx.db
@@ -83,5 +83,49 @@ export const getFeedPosts = query({
     );
 
     return postsWithInfo;
+  },
+});
+
+//! This handles liking and unliking
+export const toggleLike = mutation({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const currentUser = await getAuthenticatedUser(ctx);
+
+    // Check if already liked this post
+    const existing = await ctx.db
+      .query("likes")
+      .withIndex("by_user_and_post", (q) =>
+        q.eq("userId", currentUser._id).eq("postId", args.postId)
+      )
+      .first();
+
+    const post = await ctx.db.get(args.postId);
+    if (!post) throw new Error("Post not found");
+
+    if (existing) {
+      // remove like
+      await ctx.db.delete(existing._id);
+      await ctx.db.patch(args.postId, { likes: post.likes - 1 });
+      return false; // unliked
+    } else {
+      // or add like
+      await ctx.db.insert("likes", {
+        userId: currentUser._id,
+        postId: args.postId,
+      });
+      await ctx.db.patch(args.postId, { likes: post.likes + 1 });
+
+      // if it's not my post create(send) a notification
+      if (currentUser._id !== post.userId) {
+        await ctx.db.insert("notifications", {
+          receiverId: post.userId,
+          senderId: currentUser._id,
+          type: "like",
+          postId: args.postId,
+        });
+      }
+      return true; // liked
+    }
   },
 });
