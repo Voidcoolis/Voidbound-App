@@ -2,8 +2,9 @@ import { COLORS } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/feed.styles";
+import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
@@ -37,9 +38,17 @@ export default function Post({ post }: PostProps) {
   const [commentsCount, setCommentsCounts] = useState(post.comments);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
 
+  const { user } = useUser();
+
+  const currentUser = useQuery(
+    // or convexUser
+    api.users.getUserByClerkId,
+    user ? { clerkId: user.id } : "skip" // skip the call unless we got the user
+  );
+
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
-  //   const deletePost = useMutation(api.posts.deletePost)
+  const deletePost = useMutation(api.posts.deletePost);
 
   //function for liking a post
   const handleLike = async () => {
@@ -55,6 +64,15 @@ export default function Post({ post }: PostProps) {
   const handleBookmark = async () => {
     const newIsBookmarked = await toggleBookmark({ postId: post._id });
     setIsBookmarked(newIsBookmarked);
+  };
+
+  // deletes a post if the currentUser is the owner
+  const handleDelete = async () => {
+    try {
+      await deletePost({ postId: post._id });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   return (
@@ -74,17 +92,20 @@ export default function Post({ post }: PostProps) {
             <Text style={styles.postUsername}>{post.author.username}</Text>
           </TouchableOpacity>
         </Link>
-
-        {/*todo: show a delete button, fix it later */}
-
-        {/* 
-            <TouchableOpacity>
-                <Ionicons name='ellipsis-horizontal' size={20} color={COLORS.white}/>
-            </TouchableOpacity>
-        */}
-        <TouchableOpacity>
-          <Ionicons name="trash" size={20} color={COLORS.primary} />
-        </TouchableOpacity>
+        {/* if i'm the owner of the post, show the delete button , if not then show the 3 dots icon*/}
+        {post.author._id === currentUser?._id ? (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity>
+            <Ionicons
+              name="ellipsis-horizontal"
+              size={20}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* IMAGE */}

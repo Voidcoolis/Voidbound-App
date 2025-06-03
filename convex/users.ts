@@ -39,10 +39,10 @@ export const createUser = mutation({
 export const getUserByClerkId = query({
   args: { clerkId: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.db
+    const user = await ctx.db   //* gives the user stored in the database
       .query("users")
       .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
+      .unique();  //unique value (you can only use first())
 
     return user;
   },
