@@ -27,7 +27,7 @@ const router = useRouter(); // allows us to do navigation manually
       {/* BRAND SECTION */}
       <View style={styles.brandSection}>
         <View style={styles.logoContainer}>
-          <Ionicons name="leaf" size={32} color={COLORS.primary} />
+          <Ionicons name="planet" size={32} color={COLORS.primary} />
         </View>
         <Text style={styles.appName}>Voidbound</Text>
         <Text style={styles.tagline}>Post. Explore. Get Voidbound</Text>

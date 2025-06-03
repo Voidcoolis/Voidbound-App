@@ -33,12 +33,12 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isLikedCount, setIsLikedCount] = useState(post.likes);
-  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
   const [showComments, setShowComments] = useState(false);
   const [commentsCount, setCommentsCounts] = useState(post.comments);
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
 
   const toggleLike = useMutation(api.posts.toggleLike);
-  //   const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
+  const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
   //   const deletePost = useMutation(api.posts.deletePost)
 
   //function for liking a post
@@ -50,6 +50,11 @@ export default function Post({ post }: PostProps) {
     } catch (error) {
       console.error("Error toggling like:", error);
     }
+  };
+
+  const handleBookmark = async () => {
+    const newIsBookmarked = await toggleBookmark({ postId: post._id });
+    setIsBookmarked(newIsBookmarked);
   };
 
   return (
@@ -109,7 +114,7 @@ export default function Post({ post }: PostProps) {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleBookmark}>
           <Ionicons
             name={isBookmarked ? "bookmark" : "bookmark-outline"}
             size={22}
@@ -134,10 +139,11 @@ export default function Post({ post }: PostProps) {
 
         {post.comments > 0 && (
           <TouchableOpacity onPress={() => setShowComments(true)}>
-            <Text style={styles.commentsText}>View all {post.comments} comments</Text>
+            <Text style={styles.commentsText}>
+              View all {post.comments} comments
+            </Text>
           </TouchableOpacity>
         )}
-
 
         <Text style={styles.timeAgo}>
           {formatDistanceToNow(post._creationTime, { addSuffix: true })}
