@@ -88,6 +88,7 @@ export const getUserProfile = query({
   },
 });
 
+// if we are following the users or not
 export const isFollowing = query({
   args: { followingId: v.id("users") },
   handler: async (ctx, args) => {
@@ -100,12 +101,12 @@ export const isFollowing = query({
       )
       .first();
 
-    return !!follow;
+    return !!follow;      // * return a boolean if we are following or not
   },
 });
 
 export const toggleFollow = mutation({
-  args: { followingId: v.id("users") },
+  args: { followingId: v.id("users") },  //* to know which user we are trying to follow or unfollow 
   handler: async (ctx, args) => {
     const currentUser = await getAuthenticatedUser(ctx);
 
@@ -128,7 +129,7 @@ export const toggleFollow = mutation({
       });
       await updateFollowCounts(ctx, currentUser._id, args.followingId, true);
 
-      // create a notification
+      // create a notification for the follow
       await ctx.db.insert("notifications", {
         receiverId: args.followingId,
         senderId: currentUser._id,
