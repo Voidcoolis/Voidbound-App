@@ -48,6 +48,7 @@ export const getUserByClerkId = query({
   },
 });
 
+// function to edit profile
 export const updateProfile = mutation({
   args: {
     fullname: v.string(),
