@@ -31,13 +31,12 @@ type PostProps = {
   };
 };
 
+// ! Convex updates in real time
+
 export default function Post({ post }: PostProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [isLikedCount, setIsLikedCount] = useState(post.likes);
   const [showComments, setShowComments] = useState(false);
-  const [commentsCount, setCommentsCounts] = useState(post.comments);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
-
   const { user } = useUser();
 
   const currentUser = useQuery(
@@ -55,7 +54,6 @@ export default function Post({ post }: PostProps) {
     try {
       const newIsLiked = await toggleLike({ postId: post._id });
       setIsLiked(newIsLiked); //update state
-      setIsLikedCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("Error toggling like:", error);
     }
@@ -152,8 +150,8 @@ export default function Post({ post }: PostProps) {
       {/* POST INFO */}
       <View style={styles.postInfo}>
         <Text style={styles.likesText}>
-          {isLikedCount > 0
-            ? `${isLikedCount.toLocaleString()} likes`
+          {post.likes > 0
+            ? `${post.likes.toLocaleString()} likes`
             : "Be the first to like"}
         </Text>
         {post.caption && (
@@ -180,7 +178,6 @@ export default function Post({ post }: PostProps) {
         postId={post._id}
         visible={showComments}
         onClose={() => setShowComments(false)}
-        onCommentAdded={() => setCommentsCounts((prev) => prev + 1)}
       />
     </View>
   );

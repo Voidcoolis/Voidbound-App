@@ -31,7 +31,7 @@ export default function Notification({ notification }: any) {
         </Link>
 
         <View style={styles.notificationInfo}>
-          {/* todo: fix later */}
+          {/* if you press the username from the notification it takes to you the profile of the user that commented, liked or followed you */}
           <Link href={`/user/${notification.sender._id}`} asChild>
             <TouchableOpacity>
               <Text style={styles.username}>{notification.sender.username}</Text>

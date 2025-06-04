@@ -20,12 +20,14 @@ export default function Index() {
   if (posts === undefined) return <Loader />;
   if (posts.length === 0) return <NoPostsFound />;
 
-  //* refreshes the page by dragging it down
+  // todo: add functionality to the Refresh
+  //* refreshes the page by dragging it down (it doesn nothing. There is no functionality. it's just for show )
+  //* to work you have to call the posts query once again by using tanstack query(package) since we are using convex(to refetch a query)
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 2000);  // after 2 seconds
   };
 
   return (
