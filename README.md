@@ -1,50 +1,103 @@
-# Welcome to your Expo app 👋
+# Voidbound
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Voidbound is a modern social media mobile app built with [Expo](https://expo.dev), [React Native](https://reactnative.dev/), [Convex](https://convex.dev/) for backend/database, and [Clerk](https://clerk.com/) for authentication. Users can post images, follow others, like, comment, bookmark posts, and receive notifications.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Google authentication via Clerk
+- Create, view, and delete image posts
+- Like, comment, and bookmark posts
+- Follow/unfollow users
+- Real-time notifications for likes, comments, and follows
+- Profile editing and user stats
+- Responsive, modern UI with custom fonts and icons
+- Expo Image for fast, cached image loading
 
-   ```bash
+## Project Structure
+
+```
+.
+├── app/                # App entry and route-based screens
+│   ├── (auth)/         # Authentication screens
+│   ├── (tabs)/         # Main tab screens (feed, bookmarks, create, notifications, profile)
+│   └── user/           # User profile screens
+├── assets/             # Fonts and images
+├── components/         # Reusable UI components
+├── constants/          # Theme and mock data
+├── convex/             # Convex backend functions and schema
+├── providers/          # Context providers (Clerk, Convex)
+├── styles/             # StyleSheets for screens/components
+├── cache.ts            # Secure token cache for Clerk
+├── app.json            # Expo app config
+└── ...
+```
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Convex CLI](https://docs.convex.dev/installation)
+- [Clerk account](https://clerk.com/) for authentication
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```sh
+   git clone <your-repo-url>
+   cd Voidbound
+   ```
+
+2. **Install dependencies:**
+
+   ```sh
    npm install
    ```
 
-2. Start the app
+3. **Set up environment variables:**
 
-   ```bash
+   Create a `.env.local` file in the root directory with the following (replace with your actual keys):
+
+   ```
+   EXPO_PUBLIC_CONVEX_URL=<your-convex-url>
+   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+   CLERK_WEBHOOK_SECRET=<your-clerk-webhook-secret>
+   ```
+
+4. **Start the Convex dev server:**
+
+   ```sh
+   npx convex dev
+   ```
+
+5. **Run the app:**
+
+   ```sh
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   Use the Expo Go app or an emulator to preview.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Scripts
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- `npm start` — Start Expo development server
+- `npm run android` — Run on Android emulator/device
+- `npm run ios` — Run on iOS simulator/device
+- `npm run web` — Run in web browser
+- `npm run lint` — Lint the codebase
 
-## Get a fresh project
+## Learn More
 
-When you're ready, run:
+- [Expo Documentation](https://docs.expo.dev/)
+- [Convex Documentation](https://docs.convex.dev/)
+- [Clerk Documentation](https://clerk.com/docs)
 
-```bash
-npm run reset-project
-```
+## License
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+MIT
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+> Built with ❤️ using Expo, Convex, and Clerk.
